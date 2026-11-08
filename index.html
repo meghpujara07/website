@@ -1,0 +1,713 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TurfNation</title>
+<meta name="description" content="TurfNation shows turf owners exactly which hours sit empty, then helps fill them. Profit per turf is the number we work on.">
+<meta name="theme-color" content="#0A1A33">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy-900:#0A1A33;
+  --navy-800:#0E2242;
+  --navy-700:#16305C;
+  --navy-line:#24406E;
+  --blue:#3B82F6;
+  --blue-deep:#1D4ED8;
+  --paper:#FFFFFF;
+  --mist:#EFF2F7;
+  --rule:#D9E0EA;
+  --ink:#0B1220;
+  --ink-soft:#566782;
+  --ink-onNavy:#AFC0DA;
+
+  --display:"Archivo",system-ui,sans-serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
+
+  --gut:24px;
+  --max:1140px;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font:400 17px/1.65 var(--body);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+img,svg{display:block;max-width:100%}
+a{color:inherit}
+p{margin:0}
+h1,h2,h3{margin:0;font-family:var(--display);font-weight:800;letter-spacing:-0.025em;line-height:1.05}
+h3{font-weight:700;letter-spacing:-0.015em}
+ul{margin:0;padding:0;list-style:none}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+
+.shell{width:min(100% - calc(var(--gut) * 2),var(--max));margin-inline:auto}
+
+/* ---------- type scale ---------- */
+.t-display{font-size:clamp(38px,6.4vw,70px);line-height:1.0}
+.t-h2{font-size:clamp(27px,3.5vw,40px);line-height:1.08}
+.t-h3{font-size:19px;line-height:1.3}
+.t-lead{font-size:clamp(17px,1.5vw,19px);line-height:1.6;max-width:56ch}
+.t-small{font-size:14.5px;line-height:1.55}
+
+/* ---------- buttons ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:50px;padding:13px 24px;border-radius:5px;
+  font:600 16px/1 var(--body);text-decoration:none;
+  border:1.5px solid transparent;cursor:pointer;
+  transition:background-color .15s,border-color .15s,color .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-blue:hover{background:#2F76EE}
+.btn-deep{background:var(--blue-deep);color:#fff}
+.btn-deep:hover{background:#1A43BD}
+.btn-wire{background:transparent;color:#fff;border-color:var(--navy-line)}
+.btn-wire:hover{border-color:var(--blue);color:#fff}
+.btn-wire-ink{background:transparent;color:var(--ink);border-color:var(--rule)}
+.btn-wire-ink:hover{border-color:var(--ink);background:var(--mist)}
+
+/* ---------- masthead ---------- */
+.mast{
+  position:sticky;top:0;z-index:60;
+  background:var(--navy-900);
+  border-bottom:1px solid var(--navy-line);
+}
+.mast-in{display:flex;align-items:center;justify-content:space-between;height:66px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff}
+.logo-mark{width:26px;height:26px;flex:none}
+.logo-word{font:800 19px/1 var(--display);letter-spacing:-0.03em}
+.mast-nav{display:flex;align-items:center;gap:30px}
+.mast-nav a{text-decoration:none;color:var(--ink-onNavy);font-size:15.5px;font-weight:500}
+.mast-nav a:hover{color:#fff}
+.mast-nav .btn{min-height:40px;padding:10px 18px;font-size:15px}
+.burger{
+  display:none;width:50px;height:50px;border-radius:5px;
+  background:transparent;border:1px solid var(--navy-line);color:#fff;
+  cursor:pointer;place-items:center;
+}
+.drawer{display:none;background:var(--navy-800);border-bottom:1px solid var(--navy-line)}
+.drawer.open{display:block}
+.drawer a{
+  display:block;padding:16px 0;text-decoration:none;color:#fff;
+  font-size:17px;font-weight:500;border-bottom:1px solid var(--navy-line);
+}
+.drawer a:last-child{border-bottom:0}
+
+/* ---------- hero ---------- */
+.hero{background:var(--navy-900);color:#fff;padding:clamp(44px,6vw,84px) 0 0}
+.hero-grid{display:grid;gap:clamp(36px,5vw,60px);align-items:center}
+.hero h1{color:#fff;max-width:17ch}
+.hero-lead{color:var(--ink-onNavy);margin-top:22px}
+.hero-acts{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.hero-fine{color:#7F93B4;margin-top:18px;font-size:14.5px}
+
+.facts{
+  margin-top:clamp(40px,5vw,64px);
+  border-top:1px solid var(--navy-line);
+  display:grid;
+}
+.fact{padding:20px 0;border-bottom:1px solid var(--navy-line)}
+.fact b{display:block;font:700 17px/1.3 var(--display);color:#fff;letter-spacing:-0.01em}
+.fact span{display:block;color:#7F93B4;font-size:14.5px;margin-top:3px}
+
+/* ---------- slot board (hero artifact) ---------- */
+.board{
+  background:var(--navy-800);
+  border:1px solid var(--navy-line);
+  border-radius:8px;
+  padding:clamp(16px,2.2vw,22px);
+}
+.board-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:16px}
+.board-head b{font:700 15.5px/1.2 var(--display);color:#fff}
+.board-head span{color:#7F93B4;font-size:13px;white-space:nowrap}
+.board-days{
+  display:grid;grid-template-columns:38px repeat(7,1fr);gap:5px;
+  margin-bottom:6px;
+}
+.board-days i{
+  font-style:normal;font-size:11px;color:#7F93B4;text-align:center;
+}
+.board-row{display:grid;grid-template-columns:38px repeat(7,1fr);gap:5px;margin-bottom:5px}
+.board-row > em{
+  font-style:normal;font-size:11px;color:#7F93B4;
+  display:flex;align-items:center;
+}
+.cell{height:30px;border-radius:3px;background:#122B52}
+.cell.booked{background:var(--blue)}
+.cell.warm{background:#1F4C8F}
+.board-key{
+  display:flex;flex-wrap:wrap;gap:16px;margin-top:14px;
+  padding-top:14px;border-top:1px solid var(--navy-line);
+  font-size:12.5px;color:#7F93B4;
+}
+.board-key i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;vertical-align:0}
+.board-sum{
+  margin-top:14px;font:700 15px/1.4 var(--display);color:#fff;
+}
+.board-sum s{text-decoration:none;color:var(--blue)}
+
+@media (prefers-reduced-motion:no-preference){
+  .cell.booked,.cell.warm{animation:land .5s cubic-bezier(.2,.7,.3,1) backwards}
+}
+@keyframes land{from{opacity:0;transform:scale(.72)}to{opacity:1;transform:none}}
+
+/* ---------- generic blocks ---------- */
+.block{padding:clamp(56px,7vw,92px) 0}
+.block-mist{background:var(--mist);border-block:1px solid var(--rule)}
+.block-navy{background:var(--navy-900);color:#fff}
+.head{max-width:62ch}
+.head .t-lead{color:var(--ink-soft);margin-top:18px}
+.block-navy .head .t-lead{color:var(--ink-onNavy)}
+
+/* ---------- leak columns (hairline, no cards) ---------- */
+.leak{margin-top:clamp(36px,4vw,54px);display:grid;gap:0}
+.leak > div{padding:26px 0;border-top:1px solid var(--rule)}
+.leak h3{margin-bottom:9px}
+.leak p{color:var(--ink-soft);font-size:16px}
+
+/* ---------- formula ---------- */
+.formula{margin-top:clamp(34px,4vw,48px)}
+.formula-eq{
+  font-family:var(--display);font-weight:800;letter-spacing:-0.03em;
+  font-size:clamp(25px,4.4vw,52px);line-height:1.12;
+}
+.formula-eq s{text-decoration:none;color:var(--blue-deep)}
+.formula-note{color:var(--ink-soft);margin-top:22px;max-width:58ch;font-size:16.5px}
+
+/* ---------- method (a real sequence, so numbered) ---------- */
+.method{margin-top:clamp(36px,4vw,54px);display:grid;gap:0;counter-reset:m}
+.method > li{
+  display:grid;grid-template-columns:44px 1fr;gap:18px;
+  padding:24px 0;border-top:1px solid var(--rule);
+}
+.method > li::before{
+  counter-increment:m;content:counter(m);
+  font:700 16px/1 var(--display);color:var(--blue-deep);
+  padding-top:4px;
+}
+.method h3{margin-bottom:6px}
+.method p{color:var(--ink-soft);font-size:16px}
+
+/* ---------- offer list ---------- */
+.offer{margin-top:clamp(36px,4vw,54px);display:grid;gap:0}
+.offer > li{
+  display:grid;gap:8px;padding:24px 0;border-top:1px solid var(--rule);
+}
+.offer > li:last-child{border-bottom:1px solid var(--rule)}
+.offer h3{letter-spacing:-0.01em}
+.offer p{color:var(--ink-soft);font-size:16px;max-width:60ch}
+.offer-soon h3{color:var(--ink-soft)}
+
+/* ---------- pilot ---------- */
+.pilot{margin-top:clamp(36px,4vw,54px);display:grid;gap:clamp(32px,4vw,56px)}
+.track > li{
+  padding:15px 0;border-top:1px solid var(--navy-line);
+  color:var(--ink-onNavy);font-size:16px;
+}
+.track > li:last-child{border-bottom:1px solid var(--navy-line)}
+.pilot-ask .t-h3{color:#fff;margin-bottom:12px}
+.pilot-ask p{color:var(--ink-onNavy);font-size:16.5px;max-width:48ch}
+.pilot-ask .btn{margin-top:24px}
+
+/* ---------- maker ---------- */
+.maker{display:grid;gap:14px;max-width:70ch}
+.maker p{color:var(--ink-soft);font-size:16.5px;max-width:62ch}
+
+/* ---------- contact ---------- */
+.contact{display:grid;gap:clamp(36px,4vw,56px);align-items:start}
+.reach{margin-top:28px}
+.reach > li{padding:16px 0;border-top:1px solid var(--rule)}
+.reach > li:last-child{border-bottom:1px solid var(--rule)}
+.reach b{display:block;font-size:14.5px;color:var(--ink-soft);font-weight:500}
+.reach a{display:block;font:600 18px/1.4 var(--body);text-decoration:none;margin-top:2px}
+.reach a:hover{color:var(--blue-deep)}
+
+.form{display:grid;gap:16px;background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:clamp(20px,3vw,30px)}
+.f{display:grid;gap:7px}
+.f label{font-size:14.5px;font-weight:500;color:var(--ink)}
+.f input,.f select,.f textarea{
+  width:100%;min-height:50px;padding:13px 14px;border-radius:5px;
+  border:1px solid #C3CDDB;background:#fff;color:var(--ink);
+  font:16px/1.45 var(--body);
+  -webkit-appearance:none;appearance:none;
+}
+.f select{
+  background-image:linear-gradient(45deg,transparent 50%,var(--ink-soft) 50%),linear-gradient(135deg,var(--ink-soft) 50%,transparent 50%);
+  background-position:calc(100% - 21px) 53%,calc(100% - 16px) 53%;
+  background-size:5px 5px;background-repeat:no-repeat;
+}
+.f textarea{min-height:92px;resize:vertical}
+.f input:focus,.f select:focus,.f textarea:focus{outline:none;border-color:var(--blue-deep);box-shadow:0 0 0 3px rgba(29,78,216,.16)}
+.f-pair{display:grid;gap:16px}
+.form .btn{width:100%;margin-top:4px}
+.form-fine{font-size:13.5px;color:var(--ink-soft)}
+.form-done{
+  display:none;padding:15px;border-radius:5px;
+  background:var(--mist);border:1px solid var(--rule);font-size:15.5px;
+}
+.form-done.show{display:block}
+
+/* ---------- close ---------- */
+.close-in{display:grid;gap:22px;align-items:center}
+.close-in h2{color:#fff}
+.close-in p{color:var(--ink-onNavy);margin-top:10px}
+.close-in .btn{width:100%}
+
+.foot{border-top:1px solid var(--rule);padding:26px 0 calc(26px + env(safe-area-inset-bottom));color:var(--ink-soft);font-size:14.5px}
+.foot-in{display:flex;flex-wrap:wrap;gap:8px 28px;justify-content:space-between}
+
+/* ---------- mobile call bar ---------- */
+.bar{
+  display:none;position:fixed;left:0;right:0;bottom:0;z-index:70;
+  gap:10px;padding:10px var(--gut) calc(10px + env(safe-area-inset-bottom));
+  background:var(--navy-900);border-top:1px solid var(--navy-line);
+}
+.bar.show{display:flex}
+.bar .btn{flex:1;min-height:50px;font-size:15.5px}
+
+/* ---------- responsive ---------- */
+@media (min-width:600px){
+  .f-pair{grid-template-columns:1fr 1fr}
+  .form .btn{width:auto;justify-self:start;padding-inline:30px}
+  .facts{grid-template-columns:repeat(3,1fr);column-gap:32px}
+  .fact{border-bottom:0}
+}
+@media (min-width:860px){
+  .hero-grid{grid-template-columns:1fr 1fr}
+  .leak{grid-template-columns:repeat(3,1fr);column-gap:36px}
+  .leak > div{border-top:1px solid var(--rule);padding-top:22px}
+  .method{grid-template-columns:1fr 1fr;column-gap:40px}
+  .offer{grid-template-columns:1fr 1fr;column-gap:44px}
+  .offer > li:nth-last-child(2){border-bottom:1px solid var(--rule)}
+  .pilot{grid-template-columns:1.1fr .9fr}
+  .contact{grid-template-columns:.85fr 1.15fr}
+  .close-in{grid-template-columns:1fr auto}
+  .close-in .btn{width:auto}
+}
+@media (max-width:859px){
+  .mast-nav{display:none}
+  .burger{display:grid}
+  body{padding-bottom:82px}
+}
+@media (max-width:400px){
+  :root{--gut:18px}
+  .board-days,.board-row{grid-template-columns:30px repeat(7,1fr);gap:4px}
+  .cell{height:26px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important;transition:none !important}
+}
+</style>
+</head>
+<body>
+
+<!-- Before publishing, replace the three placeholders:
+     WhatsApp  919999999999   (digits only, with country code)
+     Phone     +919999999999
+     Email     hello@turfnation.in                              -->
+
+<header class="mast" id="top">
+  <div class="shell mast-in">
+    <a class="logo" href="#top" aria-label="TurfNation home">
+      <svg class="logo-mark" viewBox="0 0 26 26" aria-hidden="true">
+        <rect width="26" height="26" rx="5" fill="#3B82F6"/>
+        <rect x="5" y="6" width="6" height="5" rx="1" fill="#0A1A33"/>
+        <rect x="15" y="6" width="6" height="5" rx="1" fill="#0A1A33" opacity=".45"/>
+        <rect x="5" y="15" width="6" height="5" rx="1" fill="#0A1A33" opacity=".45"/>
+        <rect x="15" y="15" width="6" height="5" rx="1" fill="#0A1A33"/>
+      </svg>
+      <span class="logo-word">TurfNation</span>
+    </a>
+    <nav class="mast-nav" aria-label="Main">
+      <a href="#leak">The problem</a>
+      <a href="#profit">Profitmaxing</a>
+      <a href="#offer">What we run</a>
+      <a href="#pilot">Pilot</a>
+      <a class="btn btn-blue" href="#talk">Book a call</a>
+    </nav>
+    <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="drawer" id="drawer">
+  <div class="shell">
+    <a href="#leak">The problem</a>
+    <a href="#profit">Profitmaxing</a>
+    <a href="#offer">What we run</a>
+    <a href="#pilot">Pilot</a>
+    <a href="#talk">Book a call</a>
+  </div>
+</div>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="shell">
+      <div class="hero-grid">
+        <div>
+          <h1 class="t-display">How many hours did your turf sit empty last week?</h1>
+          <p class="t-lead hero-lead">Most owners can't answer that, which means price and promotion are guesswork. TurfNation gives you the number for every turf, hour by hour, then goes after the gaps.</p>
+          <div class="hero-acts">
+            <a class="btn btn-blue" href="#talk">Book a call</a>
+            <a class="btn btn-wire" href="https://wa.me/918866128687?text=Hi%20TurfNation%2C%20I%20run%20turfs%20and%20want%20to%20know%20more" target="_blank" rel="noopener">Message on WhatsApp</a>
+          </div>
+          <p class="hero-fine">Pricing is set per turf after the call. Nothing to install to get started.</p>
+        </div>
+
+        <div class="board" id="board">
+          <div class="board-head">
+            <b>One turf, one week</b>
+            <span>Sample view</span>
+          </div>
+          <div class="board-days" aria-hidden="true">
+            <i></i><i>M</i><i>T</i><i>W</i><i>T</i><i>F</i><i>S</i><i>S</i>
+          </div>
+          <div id="boardRows"></div>
+          <div class="board-key">
+            <span><i style="background:#3B82F6"></i>Booked</span>
+            <span><i style="background:#1F4C8F"></i>Repeat slot, unconfirmed</span>
+            <span><i style="background:#122B52"></i>Empty</span>
+          </div>
+          <p class="board-sum" id="boardSum"></p>
+        </div>
+      </div>
+
+      <ul class="facts">
+        <li class="fact"><b>Owners with two or more turfs</b><span>Built for people comparing sites, not running one diary</span></li>
+        <li class="fact"><b>Pilot running on five turfs</b><span>Outside our own city, results published here</span></li>
+        <li class="fact"><b>Priced per turf</b><span>Set after we look at your numbers together</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- LEAK -->
+  <section class="block" id="leak">
+    <div class="shell">
+      <div class="head">
+        <h2 class="t-h2">Empty hours don't show up anywhere</h2>
+        <p class="t-lead">A diary tells you who booked. It never tells you who didn't, which hours keep failing, or whether the turf across town is doing better with the same slot.</p>
+      </div>
+      <div class="leak">
+        <div>
+          <h3 class="t-h3">Idle hours stay invisible</h3>
+          <p>Weekday mornings and late nights go unsold for months. Nobody notices until the monthly total comes in low and the reason is already gone.</p>
+        </div>
+        <div>
+          <h3 class="t-h3">The real take is unclear</h3>
+          <p>Cash at the gate, online transfers and whatever staff collected all land in one pile. Revenue per turf stays an estimate.</p>
+        </div>
+        <div>
+          <h3 class="t-h3">Turfs can't be compared</h3>
+          <p>When one site fills its 7am slot and another doesn't, there's no way to see it. So whatever is working never spreads to the rest.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROFITMAXING -->
+  <section class="block block-mist" id="profit">
+    <div class="shell">
+      <div class="head">
+        <h2 class="t-h2">Profitmaxing is the whole job</h2>
+        <p class="t-lead">Not bookings. Not app downloads. Profit per turf is the number we work on, and a full slot at the wrong price can still lose you money.</p>
+      </div>
+
+      <div class="formula">
+        <p class="formula-eq">profit per turf <s>=</s> price <s>&times;</s> occupancy <s>&minus;</s> running costs</p>
+        <p class="formula-note">Every decision has to move one of those three terms the right way without dragging the others down. Discounting into a full Saturday is a loss. Holding peak price on a dead Tuesday is also a loss. The work is knowing which hour is which.</p>
+      </div>
+
+      <ol class="method">
+        <li>
+          <div>
+            <h3 class="t-h3">Measure</h3>
+            <p>Your bookings go in and real occupancy and revenue come out, split by hour, day and turf.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3 class="t-h3">Diagnose</h3>
+            <p>Separate the hours losing money on price from the ones losing it on demand. The fix is different for each.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3 class="t-h3">Fill</h3>
+            <p>Offers, reminders and calls aimed only at the hours that need them, sent to players who already book that time.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3 class="t-h3">Compare</h3>
+            <p>Put your turfs side by side, find the site doing something right, and run it everywhere.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- OFFER -->
+  <section class="block" id="offer">
+    <div class="shell">
+      <div class="head">
+        <h2 class="t-h2">What we run for you</h2>
+        <p class="t-lead">Start with whichever one is costing you most. The rest can come later.</p>
+      </div>
+      <ul class="offer">
+        <li>
+          <h3 class="t-h3">Occupancy analytics</h3>
+          <p>Occupancy and revenue by hour, day and turf, so the weak slots have names instead of being a feeling.</p>
+        </li>
+        <li>
+          <h3 class="t-h3">Booking management</h3>
+          <p>One calendar across every turf, covering holds, cancellations and walk-ins, with far fewer double bookings.</p>
+        </li>
+        <li>
+          <h3 class="t-h3">Empty-slot filling</h3>
+          <p>Targeted offers and reminders for the hours going to waste, sent to the players most likely to take them.</p>
+        </li>
+        <li>
+          <h3 class="t-h3">Daily and weekly reports</h3>
+          <p>Cash and online split properly, with staff accountability, delivered without anyone assembling it by hand.</p>
+        </li>
+        <li>
+          <h3 class="t-h3">Calling and follow-ups</h3>
+          <p>An assistant that works through past customers and confirms bookings for the slots still open this week.</p>
+        </li>
+        <li class="offer-soon">
+          <h3 class="t-h3">More on the way</h3>
+          <p>TurfNation will extend to other businesses that run on booked time. Ask what's coming for yours.</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- PILOT -->
+  <section class="block block-navy" id="pilot">
+    <div class="shell">
+      <div class="head">
+        <h2 class="t-h2">We're testing this in the open</h2>
+        <p class="t-lead">There are no case studies on this page yet, because the pilot is still running. Five turfs outside our own city, three different approaches, and whatever the numbers say gets published here.</p>
+      </div>
+      <div class="pilot">
+        <ul class="track">
+          <li>Occupancy by hour, before and after each change</li>
+          <li>Revenue per turf-hour, which is the number that matters</li>
+          <li>Share of empty slots actually filled by reminders and calls</li>
+          <li>Hours the owner stops spending on reports</li>
+        </ul>
+        <div class="pilot-ask">
+          <h3 class="t-h3">Pilot spots go to multi-turf owners first</h3>
+          <p>If you run two or more turfs, book a call and we'll go through a month of your bookings together. You'll get the occupancy breakdown either way.</p>
+          <a class="btn btn-blue" href="#talk">Book a call</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAKER -->
+  <section class="block">
+    <div class="shell">
+      <div class="maker">
+        <h2 class="t-h2">Who's behind it</h2>
+        <p>TurfNation is built by a Computer Science student at Nirma University, handling the product, the software and the business side directly. It came out of building cricket and sports tools first, then watching how much turf revenue disappears into the gap between a paper diary, a WhatsApp group and a cash box.</p>
+        <p>That means you talk to the person who builds it, and a change you ask for doesn't go into a queue behind a hundred other customers.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TALK -->
+  <section class="block block-mist" id="talk">
+    <div class="shell contact">
+      <div>
+        <h2 class="t-h2">Tell us about your turfs</h2>
+        <p class="t-lead" style="color:var(--ink-soft)">Send a few details and we'll come back on WhatsApp or call, whichever you prefer. First call is a look at your occupancy, not a pitch.</p>
+        <ul class="reach">
+          <li><b>Call</b><a href="tel:+918866128687">+91 88661 28687</a></li>
+          <li><b>WhatsApp</b><a href="https://wa.me/918866128687" target="_blank" rel="noopener">+91 88661 28687</a></li>
+          <li><b>Email</b><a href="mailto:meghpujara8@gmail.com">meghpujara8@gmail.com</a></li>
+        </ul>
+      </div>
+
+      <form class="form" id="form" novalidate>
+        <div class="f-pair">
+          <div class="f">
+            <label for="n">Your name</label>
+            <input id="n" name="name" type="text" autocomplete="name" required placeholder="Rahul Shah">
+          </div>
+          <div class="f">
+            <label for="p">WhatsApp number</label>
+            <input id="p" name="phone" type="tel" inputmode="tel" autocomplete="tel" required placeholder="+91 98765 43210">
+          </div>
+        </div>
+        <div class="f-pair">
+          <div class="f">
+            <label for="c">City</label>
+            <input id="c" name="city" type="text" autocomplete="address-level2" placeholder="Ahmedabad">
+          </div>
+          <div class="f">
+            <label for="t">How many turfs</label>
+            <select id="t" name="turfs" required>
+              <option value="">Select</option>
+              <option>1</option>
+              <option>2 to 3</option>
+              <option>4 to 5</option>
+              <option>6 or more</option>
+            </select>
+          </div>
+        </div>
+        <div class="f">
+          <label for="g">What's costing you most right now</label>
+          <select id="g" name="goal">
+            <option value="">Select</option>
+            <option>Empty off-peak hours</option>
+            <option>No clear view of occupancy</option>
+            <option>Profit per turf is flat</option>
+            <option>Payments and reporting are a mess</option>
+          </select>
+        </div>
+        <div class="f">
+          <label for="m">Anything else (optional)</label>
+          <textarea id="m" name="msg" placeholder="How you take bookings today, and what you've already tried"></textarea>
+        </div>
+        <button class="btn btn-deep" type="submit">Send on WhatsApp</button>
+        <p class="form-fine">Your details are used to reply to you, nothing else.</p>
+        <p class="form-done" id="done" role="status" aria-live="polite">WhatsApp is opening with your details filled in. If it didn't, message +91 88661 28687 directly.</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- CLOSE -->
+  <section class="block block-navy" style="padding-block:clamp(44px,5vw,68px)">
+    <div class="shell close-in">
+      <div>
+        <h2 class="t-h2">Find out what last week actually cost you</h2>
+        <p>One call, one month of your bookings, and the occupancy breakdown is yours to keep.</p>
+      </div>
+      <a class="btn btn-blue" href="#talk">Book a call</a>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="shell foot-in">
+    <span>TurfNation, profit per turf as the only target</span>
+    <span>&copy; <span id="yr">2026</span> TurfNation</span>
+  </div>
+</footer>
+
+<div class="bar" id="bar" role="region" aria-label="Contact">
+  <a class="btn btn-wire" href="tel:+918866128687">Call</a>
+  <a class="btn btn-blue" href="#talk">Book a call</a>
+</div>
+
+<script>
+/* ---- slot board: built from data, one orchestrated fill on load ---- */
+(function(){
+  var times = ['6a','9a','12p','4p','7p','9p','11p'];
+  /* 0 empty, 1 booked, 2 repeat-unconfirmed. Mon..Sun per row. */
+  var weeks = [
+    [0,0,0,0,0,1,1],
+    [0,0,2,0,0,1,1],
+    [0,0,0,0,0,2,1],
+    [0,2,0,0,1,1,1],
+    [1,1,1,2,1,1,1],
+    [1,1,2,1,1,1,1],
+    [0,0,0,0,1,2,0]
+  ];
+  var host = document.getElementById('boardRows');
+  if(!host) return;
+  var n = 0, total = 0, taken = 0;
+  weeks.forEach(function(row, r){
+    var line = document.createElement('div');
+    line.className = 'board-row';
+    var lab = document.createElement('em');
+    lab.textContent = times[r] || '';
+    line.appendChild(lab);
+    row.forEach(function(v){
+      var c = document.createElement('div');
+      c.className = 'cell' + (v === 1 ? ' booked' : v === 2 ? ' warm' : '');
+      total++;
+      if(v){ taken++; c.style.animationDelay = (120 + (n++ * 26)) + 'ms'; }
+      line.appendChild(c);
+    });
+    host.appendChild(line);
+  });
+
+  /* summary is derived from the board above, so the two can never disagree */
+  var sum = document.getElementById('boardSum');
+  if(sum){
+    sum.innerHTML = 'Booked ' + taken + ' of ' + total + ' slots. ' +
+      '<s>' + (total - taken) + ' slots earned nothing.</s>';
+  }
+})();
+
+/* ---- menu ---- */
+(function(){
+  var b = document.getElementById('burger'), d = document.getElementById('drawer');
+  b.addEventListener('click', function(){
+    var open = d.classList.toggle('open');
+    b.setAttribute('aria-expanded', String(open));
+  });
+  d.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){
+      d.classList.remove('open');
+      b.setAttribute('aria-expanded','false');
+    });
+  });
+})();
+
+/* ---- mobile call bar: after hero, hidden over the form ---- */
+(function(){
+  var bar = document.getElementById('bar');
+  var hero = document.querySelector('.hero');
+  var talk = document.getElementById('talk');
+  var heroOut = false, talkIn = false;
+  function sync(){ bar.classList.toggle('show', heroOut && !talkIn); }
+  new IntersectionObserver(function(e){ heroOut = !e[0].isIntersecting; sync(); }).observe(hero);
+  new IntersectionObserver(function(e){ talkIn = e[0].isIntersecting; sync(); }).observe(talk);
+})();
+
+/* ---- form hands off to WhatsApp with the details prefilled ---- */
+(function(){
+  var NUMBER = '918866128687'; /* replace: digits only, with country code */
+  var f = document.getElementById('form');
+  f.addEventListener('submit', function(e){
+    e.preventDefault();
+    var d = new FormData(f);
+    var name = (d.get('name')||'').toString().trim();
+    var phone = (d.get('phone')||'').toString().trim();
+    var turfs = d.get('turfs');
+    if(!name || !phone || !turfs){ f.reportValidity(); return; }
+    var text = [
+      'Hi TurfNation, I run turfs and want to talk.',
+      '',
+      'Name: ' + name,
+      'Phone: ' + phone,
+      'City: ' + ((d.get('city')||'').toString().trim() || 'not given'),
+      'Turfs: ' + turfs,
+      'Biggest cost: ' + (d.get('goal') || 'not given'),
+      'Notes: ' + ((d.get('msg')||'').toString().trim() || 'none')
+    ].join('\n');
+    document.getElementById('done').classList.add('show');
+    window.open('https://wa.me/' + NUMBER + '?text=' + encodeURIComponent(text), '_blank', 'noopener');
+  });
+})();
+
+document.getElementById('yr').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
